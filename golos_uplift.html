@@ -1,0 +1,283 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>UPLIFT INVOICE</title>
+    <meta name="Description" content="UPLIFT INVOICE">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,initial-scale=1">
+
+    <style>
+        .invoice-box {
+            max-width: 800px;
+            margin: auto;
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            font-size: 16px;
+            line-height: 24px;
+            font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+            color: #555;
+        }
+
+        .invoice-box table {
+            width: 100%;
+            line-height: inherit;
+            text-align: left;
+        }
+
+        .invoice-box table td {
+            padding: 5px;
+            vertical-align: top;
+        }
+
+        .invoice-box table tr td:nth-child(2) {
+            text-align: right;
+        }
+
+        .invoice-box table tr.top table td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.top table td.title {
+            font-size: 45px;
+            line-height: 45px;
+            color: #333;
+        }
+
+        .invoice-box table tr.information table td {
+            padding-bottom: 40px;
+        }
+
+        .invoice-box table tr.heading td {
+            background: #eee;
+            border-bottom: 1px solid #ddd;
+            font-weight: bold;
+        }
+
+        .invoice-box table tr.details td {
+            padding-bottom: 20px;
+        }
+
+        .invoice-box table tr.item td{
+            border-bottom: 1px solid #eee;
+        }
+
+        .invoice-box table tr.item.last td {
+            border-bottom: none;
+        }
+
+        .invoice-box table tr.total td:nth-child(2) {
+            border-top: 2px solid #eee;
+            font-weight: bold;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .invoice-box table tr.top table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+
+            .invoice-box table tr.information table td {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+
+        /** RTL **/
+        .rtl {
+            direction: rtl;
+            font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+        }
+
+        .rtl table {
+            text-align: right;
+        }
+
+        .rtl table tr td:nth-child(2) {
+            text-align: left;
+        }
+
+        input {
+            width: 100%;
+            height: 20pt;
+        }
+
+        #submit_btn {
+            width: 100%;
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+
+        section#invoice.done {
+            transform: scale(0);
+            transition: 0.5s all;
+        }
+        xmp {
+            background: #242424;
+            padding: 15px;
+            border-radius: 5px;
+            color: #79ffa7;
+        }
+    </style>
+    <script src="https://unpkg.com/golos-js@0.6.3/dist/golos.min.js"></script>
+</head>
+
+<body>
+<div id="out"></div>
+<section id="invoice">
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+        <tr class="top">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td class="title">
+                            U P L I F T
+                        </td>
+
+                        <td>
+                            <br>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="information">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td>
+                            Uplift Ltd.<br>
+                            Golos blockchain
+                        </td>
+
+                        <td id="sender">
+                            Client
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+
+        <tr class="heading">
+            <td>
+                Item
+            </td>
+
+            <td>
+                Price
+            </td>
+        </tr>
+
+        <tr class="item last">
+            <td id="url">
+                UPVOTE
+            </td>
+
+            <td id="amount">
+                ??? GBG
+            </td>
+        </tr>
+
+        <tr class="total">
+            <td></td>
+
+            <td>
+                Total: <span id="total_amount">??? GBG</span>
+            </td>
+        </tr>
+
+        <tr class="buttons">
+            <td colspan="2">
+                <p>Account:</p>
+                <input type="text" name="sender" id="sender_input">
+                <p>Password:</p>
+                <input name="password" id="wif_input" type="password" autofocus>
+                <p></p>
+                <button class="button" id="submit_btn">Pay</button>
+            </td>
+        </tr>
+    </table>
+</div>
+</section>
+<script>
+    function getHashValue(key) {
+        var matches = location.hash.match(new RegExp(key+'=([^&]*)'));
+        return matches ? matches[1] : null;
+    }
+
+    // usage
+    var sender = getHashValue('sender');
+    var amount = getHashValue('amount');
+    var url = decodeURIComponent(getHashValue('url'));
+
+    document.getElementById("sender_input").value = sender;
+
+    document.getElementById("sender").innerHTML = "Client:<br>" + sender;
+    document.getElementById("amount").innerHTML = amount + " GBG";
+    document.getElementById("total_amount").innerHTML = amount + " GBG";
+    document.getElementById("url").innerHTML = "<b>UPVOTE</b>: <a href='" + url + "'>" + url + "</a>";
+
+    golos.config.set('url','https://api.golos.blckchnd.com');
+
+    document.getElementById("submit_btn").addEventListener("click", function(){
+        document.getElementById('out').innerHTML = "";
+
+        var username = document.getElementById("sender_input").value.toLowerCase().replace(/@/g, '').replace(/ /g, '');
+        var password = document.getElementById("wif_input").value.replace(/ /g, '');
+
+        golos.api.getAccounts([username], function(err, result){
+            if(err || !result[0]) {
+                console.log(err);
+                var jsone = JSON.stringify(err, null, 4);
+                document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2>Description: <xmp>"+jsone+"</xmp></div>");
+                //return alert('Error! Open console to see details!', err)
+            }else{
+                console.log(result[0]);
+                var x = result[0],
+                    pubWif = x.active.key_auths[0][0],
+                    activekey= golos.auth.getPrivateKeys(username, password, ['active']),
+                    wif = activekey.active,
+                    isWIF = golos.auth.wifIsValid(wif, pubWif);
+                if (!isWIF) {
+                    document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2><xmp>Invalid password!</xmp></div>");
+                    return alert('Invalid account or password', username);
+                }
+                var from = username,
+                    to = "uplift",
+                    amount_ = amount + " GBG",
+                    memo = url;
+                if (confirm("Send "+amount_+" from "+from+ " to "+to+"?")) {
+                    golos.broadcast.transfer(wif, from, to, amount_, memo, function(err, result) {
+                        console.log(err, result);
+                        if (err) {
+                            var jsone = JSON.stringify(err, null, 4);
+                            document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2>Details: <xmp>"+jsone+"</xmp></div>");
+                            return alert(err);
+                        }
+                        json = JSON.stringify(result, null, 4);
+                        document.getElementById("invoice").classList.add("done");
+                        window.scrollTo(0, 0);
+                        //return alert("You sent "+amount_+" from "+from+ " to "+to+"</h3>RAW: </br><xmp>"+json+"</xmp>");
+                        document.getElementById('out').insertAdjacentHTML("afterbegin","<h2>Success!</h2><h3>Check uplift queue: <a href='https://uplift.rentmyvote.org'>https://uplift.rentmyvote.org</a></h3>RAW Transaction: </br><xmp>"+json+"</xmp>");
+                    });
+                } else {
+                    return false;
+                }
+            }
+        });
+    });
+</script>
+</body>
+</html>
