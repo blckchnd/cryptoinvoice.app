@@ -129,7 +129,7 @@
             color: #79ffa7;
         }
     </style>
-    <script src="https://unpkg.com/golos-js@0.6.3/dist/golos.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/golos-js@0.7.0/dist/golos.min.js"></script>
 </head>
 
 <body>
@@ -229,9 +229,11 @@
     document.getElementById("total_amount").innerHTML = amount + " GBG";
     document.getElementById("url").innerHTML = "<b>UPVOTE</b>: <a href='" + url + "'>" + url + "</a>";
 
-    golos.config.set('url','https://api.golos.blckchnd.com');
+    golos.config.set('url','https://api.golos.graphenelab.org');
 
-    document.getElementById("submit_btn").addEventListener("click", function(){
+    var submitBtn =  document.getElementById("submit_btn");
+    submitBtn.addEventListener("click", function() {
+        submitBtn.disabled = true;
         document.getElementById('out').innerHTML = "";
 
         var username = document.getElementById("sender_input").value.toLowerCase().replace(/@/g, '').replace(/ /g, '');
@@ -240,17 +242,37 @@
         golos.api.getAccounts([username], function(err, result){
             if(err || !result[0]) {
                 console.log(err);
+                submitBtn.disabled = false;
                 var jsone = JSON.stringify(err, null, 4);
                 document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2>Description: <xmp>"+jsone+"</xmp></div>");
                 //return alert('Error! Open console to see details!', err)
-            }else{
+            } else {
                 console.log(result[0]);
-                var x = result[0],
-                    pubWif = x.active.key_auths[0][0],
-                    activekey= golos.auth.getPrivateKeys(username, password, ['active']),
-                    wif = activekey.active,
+                var x = result[0];
+                var pubWif = x.active.key_auths[0][0];
+
+                // check if password is active key
+                var wif = password;
+                var isWIF = false;
+                try {
                     isWIF = golos.auth.wifIsValid(wif, pubWif);
+                } catch (e) {
+                    console.error(e);
+                }
+
                 if (!isWIF) {
+                    var keys = golos.auth.getPrivateKeys(username, password, ['active']);
+                    wif = keys.active;
+
+                    try {
+                        isWIF = golos.auth.wifIsValid(wif, pubWif);
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                if (!isWIF) {
+                    submitBtn.disabled = false;
                     document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2><xmp>Invalid password!</xmp></div>");
                     return alert('Invalid account or password', username);
                 }
@@ -262,6 +284,7 @@
                     golos.broadcast.transfer(wif, from, to, amount_, memo, function(err, result) {
                         console.log(err, result);
                         if (err) {
+                            submitBtn.disabled = false;
                             var jsone = JSON.stringify(err, null, 4);
                             document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2>Details: <xmp>"+jsone+"</xmp></div>");
                             return alert(err);
@@ -273,6 +296,7 @@
                         document.getElementById('out').insertAdjacentHTML("afterbegin","<h2>Success!</h2><h3>Check uplift queue: <a href='https://uplift.rentmyvote.org'>https://uplift.rentmyvote.org</a></h3>RAW Transaction: </br><xmp>"+json+"</xmp>");
                     });
                 } else {
+                    submitBtn.disabled = false;
                     return false;
                 }
             }
