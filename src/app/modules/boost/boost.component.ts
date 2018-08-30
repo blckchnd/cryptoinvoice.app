@@ -36,7 +36,7 @@ export class BoostComponent implements OnInit {
 
   initForm() {
     this.paymentForm = this.fb.group({
-      account: ['', [
+      account: [this.sender, [
         Validators.required,
         Validators.pattern(/^[a-zA-Z0-9.\-_$@*!]{3,30}$/)
       ]],
@@ -48,36 +48,41 @@ export class BoostComponent implements OnInit {
 
   sentPayment() {
     const account = this.paymentForm.get('account').value;
-    const password = this.paymentForm.get('password').value;
     const sendTo = 'uplift';
+    const amount = this.amount + " GBG";
     this.golosService.getAccounts([account]).subscribe(res => {
       if (res.length > 0) {
         this.accountNameInvalid.next(false);
         this.privateKeyInvalid.next(false);
         const pubWif = res[0].active.key_auths[0][0];
-        let wif = false;
+
+        let wif = this.paymentForm.get('password').value;
+        let isWIF = false;
         try {
-          wif = golos.auth.wifIsValid(password, pubWif);
+          isWIF = golos.auth.wifIsValid(wif, pubWif);
         } catch (e) {
           console.log(e);
         }
-        if (!wif) {
-          var keys = golos.auth.getPrivateKeys(account, password, ['active']);
+        if (!isWIF) {
+          var keys = golos.auth.getPrivateKeys(account, wif, ['active']);
           wif = keys.active;
+
           try {
-            wif = golos.auth.wifIsValid(wif, pubWif);
+            isWIF = golos.auth.wifIsValid(wif, pubWif);
           } catch (e) {
             console.error(e);
           }
         }
-        if (!wif) {
+        if (!isWIF) {
           return this.privateKeyInvalid.next(true);
         }
-        if (confirm("Send "+this.amount+"GBG from "+account+ " to "+sendTo+"?")) {
-          golos.broadcast.transfer(wif, account, sendTo, this.amount, this.url, (err, result) => {
+        if (confirm("Send "+ amount + " from "+account+ " to "+sendTo+"?")) {
+          golos.broadcast.transfer(wif, account, sendTo, amount, this.url, (err, result) => {
             console.log(err, result);
             if (err) {
+              console.log(err);
               var jsone = JSON.stringify(err, null, 4);
+              console.log(jsone);
               this.infoMessage = 'Error. Details:' + jsone;
               // document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2>Details: <xmp>"+jsone+"</xmp></div>");
               return alert(err);
