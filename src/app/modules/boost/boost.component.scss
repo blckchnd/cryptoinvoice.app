@@ -1,0 +1,25 @@
+.grid {
+  height: 100%;
+  background: url("../../../assets/images/bg-08.png") no-repeat !important;
+  background-size: cover!important;
+  .column {
+    max-width: 450px;
+
+    .image {
+      width: 10em;
+    }
+
+    .text-left {
+      text-align: left;
+    }
+  }
+
+  .message {
+    a {
+      &.dark {
+        color: gray;
+      }
+    }
+  }
+}
+
