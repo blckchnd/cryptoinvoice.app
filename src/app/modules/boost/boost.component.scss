@@ -9,6 +9,13 @@
       width: 10em;
     }
 
+    .field {
+      .error {
+        text-align: left;
+        margin-top: 5px;
+      }
+    }
+
     .text-left {
       text-align: left;
     }

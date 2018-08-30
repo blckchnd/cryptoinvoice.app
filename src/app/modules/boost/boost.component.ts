@@ -15,6 +15,7 @@ export class BoostComponent implements OnInit {
   sender: string;
   url: string;
   infoMessage: string;
+  isOperationSucces = false;
   paymentForm: FormGroup;
   public accountNameInvalid = new BehaviorSubject<boolean>(false);
   public privateKeyInvalid = new BehaviorSubject<boolean>(false);
@@ -47,6 +48,8 @@ export class BoostComponent implements OnInit {
   }
 
   sentPayment() {
+    this.infoMessage = '';
+    this.isOperationSucces = false;
     const account = this.paymentForm.get('account').value;
     const sendTo = 'uplift';
     const amount = this.amount + " GBG";
@@ -80,17 +83,12 @@ export class BoostComponent implements OnInit {
           golos.broadcast.transfer(wif, account, sendTo, amount, this.url, (err, result) => {
             console.log(err, result);
             if (err) {
-              console.log(err);
-              var jsone = JSON.stringify(err, null, 4);
-              console.log(jsone);
-              this.infoMessage = 'Error. Details:' + jsone;
-              // document.getElementById('out').insertAdjacentHTML("afterbegin","<div class='err'><h2>Error!</h2>Details: <xmp>"+jsone+"</xmp></div>");
-              return alert(err);
+              return this.infoMessage = 'Error. Details:' + err.message;
             }
-            let json = JSON.stringify(result, null, 4);
-            window.scrollTo(0, 0);
-            this.infoMessage = 'Succes' + jsone;
-            // document.getElementById('out').insertAdjacentHTML("afterbegin","<h2>Success!</h2><h3>Check uplift queue: <a href='https://uplift.rentmyvote.org'>https://uplift.rentmyvote.org</a></h3>RAW Transaction: </br><xmp>"+json+"</xmp>");
+            this.isOperationSucces = true;
+            this.infoMessage = 'Succes! ' + 'Check uplift queue: ' +
+              `<a href='https://uplift.rentmyvote.org' target="_blank">https://uplift.rentmyvote.org</a>`;
+            this.paymentForm.get('password').setValue('');
           });
         } else {
           return false;

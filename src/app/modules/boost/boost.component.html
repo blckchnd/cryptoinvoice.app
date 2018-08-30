@@ -4,10 +4,9 @@
     <h2 class="ui teal image header">
       <img src="../../../assets/images/cryptoinvoice.png" class="image">
     </h2>
-    <div class="ui attached message green text-left" *ngIf="infoMessage">
-      <div class="header">
-        {{infoMessage}}
-      </div>
+    <div class="ui attached message text-left" *ngIf="infoMessage"
+         [ngClass]="{'orange': !isOperationSucces,'olive': isOperationSucces}">
+      <div class="header" [innerHTML] = "infoMessage"></div>
     </div>
     <div class="content">
       <div class="ui attached message text-left">
@@ -27,7 +26,7 @@
 
       <form class="ui large form" [formGroup]="paymentForm">
         <div class="ui stacked segment">
-          <div class="field">
+          <div class="field" [class.error]="(accountNameInvalid | async) === true">
             <div class="ui left icon input">
               <i class="user icon"></i>
               <input type="text" name="account" formControlName="account" placeholder="Account">
@@ -36,19 +35,18 @@
               This username is not registered
             </div>
           </div>
-          <div class="field">
+          <div class="field" [class.error]="(privateKeyInvalid | async) === true">
             <div class="ui left icon input">
               <i class="lock icon"></i>
               <input type="password" name="password" formControlName="password" placeholder="Password">
             </div>
             <div class="error" *ngIf="(privateKeyInvalid | async) === true">
-              Incorrect Private Posting key
+              Incorrect Password
             </div>
           </div>
           <div class="ui large inverted purple button" [class.disabled]="paymentForm.invalid"
                (click)="sentPayment()">Pay</div>
         </div>
-        <div class="ui error message"></div>
       </form>
 
     </div>
