@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
 import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {GolosService} from "../../core/services/golos.service";
@@ -10,7 +10,7 @@ import * as golos from 'golos-js';
   templateUrl: './boost.component.html',
   styleUrls: ['./boost.component.scss']
 })
-export class BoostComponent implements OnInit {
+export class BoostComponent implements OnInit, OnDestroy {
   amount: string;
   sender: string;
   url: string;
@@ -21,7 +21,10 @@ export class BoostComponent implements OnInit {
   public privateKeyInvalid = new BehaviorSubject<boolean>(false);
   constructor(private route: ActivatedRoute,
               private fb: FormBuilder,
-              private golosService: GolosService) { }
+              private golosService: GolosService,
+              private renderer: Renderer2) {
+    this.renderer.addClass(document.body, 'boost');
+  }
 
   ngOnInit() {
     this.route.queryParams
@@ -33,6 +36,10 @@ export class BoostComponent implements OnInit {
         }
       });
     this.initForm();
+  }
+
+  ngOnDestroy() {
+    this.renderer.removeClass(document.body, 'boost');
   }
 
   initForm() {
