@@ -38,7 +38,7 @@
           <div class="field" [class.error]="(privateKeyInvalid | async) === true">
             <div class="ui left icon input">
               <i class="lock icon"></i>
-              <input type="password" name="password" formControlName="password" placeholder="Password">
+              <input type="password" name="password" formControlName="password" placeholder="Password or Active key">
             </div>
             <div class="error" *ngIf="(privateKeyInvalid | async) === true">
               Incorrect Password
@@ -51,6 +51,7 @@
 
     </div>
     <div class="ui message">
+      <p class="text-left">Your keys are safely encrypted. They are never sent anywhere, all operations happen locally. Only the resulting signed messages are broadcasted to the network.</p>
       <a class="dark" href="/">About Cryptoinvoice</a>
     </div>
   </div>

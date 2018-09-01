@@ -8,6 +8,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "prod": "ng build --prod",
+    "prod-aot": "ng build --prod --aot",
     "postinstall": "node patch.js"
   },
   "private": true,
