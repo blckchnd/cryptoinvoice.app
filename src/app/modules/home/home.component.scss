@@ -1,0 +1,23 @@
+.menu {
+  background: none;
+  border: none;
+  box-shadow: none;
+  margin-bottom: 14em;
+  .item {
+    border: none!important;
+    &:before {
+      display: none;
+    }
+  }
+  .logo {
+    width: 13em;
+  }
+}
+
+.segment {
+  height: 100%;
+
+  .button {
+    margin-top: 2em;
+  }
+}

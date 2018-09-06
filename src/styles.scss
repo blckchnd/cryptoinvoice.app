@@ -1,0 +1,18 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+
+  &.home {
+    background: url("/assets/images/bg-09.png") no-repeat;
+    background-size: cover;
+  }
+
+  &.boost {
+    background: url("/assets/images/bg-08.png") no-repeat;
+    background-size: cover;
+  }
+
+  &.not-found {
+    background: url("/assets/images/bg-04.png") no-repeat;
+    background-size: cover;
+  }
+}
