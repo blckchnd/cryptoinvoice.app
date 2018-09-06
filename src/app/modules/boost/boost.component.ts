@@ -4,6 +4,7 @@ import {FormBuilder, FormGroup, Validators} from "@angular/forms";
 import {GolosService} from "../../core/services/golos.service";
 import {BehaviorSubject} from "rxjs";
 import * as golos from 'golos-js';
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-boost',
@@ -19,6 +20,7 @@ export class BoostComponent implements OnInit, OnDestroy {
   paymentForm: FormGroup;
   public accountNameInvalid = new BehaviorSubject<boolean>(false);
   public privateKeyInvalid = new BehaviorSubject<boolean>(false);
+  pathToAssetsFolder = environment.pathToAssetsFolder;
   constructor(private route: ActivatedRoute,
               private fb: FormBuilder,
               private golosService: GolosService,

@@ -2,7 +2,7 @@
   <div class="column">
 
     <h2 class="ui teal image header">
-      <img src="../../../assets/images/cryptoinvoice.png" class="image">
+      <img src="{{pathToAssetsFolder + '/images/cryptoinvoice.png'}}" class="image">
     </h2>
     <div class="ui attached message text-left" *ngIf="infoMessage"
          [ngClass]="{'orange': !isOperationSucces,'olive': isOperationSucces}">
