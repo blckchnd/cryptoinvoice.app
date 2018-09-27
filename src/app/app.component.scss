@@ -22,3 +22,15 @@
     animation: octocat-wave 560ms ease-in-out
   }
 }
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #ffffff!important;
+
+  p {
+    margin: 0;
+  }
+}
