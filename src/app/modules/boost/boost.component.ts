@@ -1,10 +1,10 @@
 import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
-import {ActivatedRoute} from "@angular/router";
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {GolosService} from "../../core/services/golos.service";
-import {BehaviorSubject} from "rxjs";
+import {ActivatedRoute} from '@angular/router';
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {GolosService} from '../../core/services/golos.service';
+import {BehaviorSubject} from 'rxjs';
 import * as golos from 'golos-js';
-import {environment} from "../../../environments/environment";
+import {environment} from '../../../environments/environment';
 
 @Component({
   selector: 'app-boost',
@@ -61,7 +61,7 @@ export class BoostComponent implements OnInit, OnDestroy {
     this.isOperationSucces = false;
     const account = this.paymentForm.get('account').value;
     const sendTo = 'uplift';
-    const amount = this.amount + " GBG";
+    const amount = this.amount + ' GBG';
     this.golosService.getAccounts([account]).subscribe(res => {
       if (res.length > 0) {
         this.accountNameInvalid.next(false);
@@ -88,7 +88,7 @@ export class BoostComponent implements OnInit, OnDestroy {
         if (!isWIF) {
           return this.privateKeyInvalid.next(true);
         }
-        if (confirm("Send "+ amount + " from "+account+ " to "+sendTo+"?")) {
+        if (confirm('Send ' + amount + ' from ' + account + ' to ' + sendTo + '?')) {
           golos.broadcast.transfer(wif, account, sendTo, amount, this.url, (err, result) => {
             console.log(err, result);
             if (err) {
