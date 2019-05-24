@@ -60,7 +60,7 @@ export class BoostComponent implements OnInit, OnDestroy {
     this.infoMessage = '';
     this.isOperationSucces = false;
     const account = this.paymentForm.get('account').value;
-    const sendTo = 'uplift';
+    const sendTo = 'broker1';
     const amount = this.amount + " GBG";
     this.golosService.getAccounts([account]).subscribe(res => {
       if (res.length > 0) {
