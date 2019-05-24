@@ -96,7 +96,8 @@ export class BoostComponent implements OnInit, OnDestroy {
             }
             this.isOperationSucces = true;
             this.infoMessage = 'Succes! ' + 'Check uplift queue: ' +
-              `<a href='https://uplift.rentmyvote.org' target="_blank">https://uplift.rentmyvote.org</a>`;
+              `<a href='https://rentmyvote.org/dashboard/rentmyvote/bids' 
+                target="_blank">https://rentmyvote.org/dashboard/rentmyvote/bids</a>`;
             this.paymentForm.get('password').setValue('');
           });
         } else {
