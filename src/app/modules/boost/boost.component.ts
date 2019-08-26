@@ -15,7 +15,9 @@ golos.config.set('websocket', 'wss://api.golos.blckchnd.com/ws');
 export class BoostComponent implements OnInit, OnDestroy {
   amount: string;
   sender: string;
+  sendTo: string;
   url: string;
+  redirect_uri: string;
   infoMessage: string;
   isOperationSucces = false;
   paymentForm: FormGroup;
@@ -35,7 +37,10 @@ export class BoostComponent implements OnInit, OnDestroy {
         if (params) {
           this.amount = params['amount'];
           this.sender = params['sender'];
+          this.sendTo = params['send_to'];
           this.url = params['url'];
+          this.redirect_uri = params['redirect_uri'];
+          console.log(this.redirect_uri);
         }
       });
     this.initForm();
@@ -61,8 +66,7 @@ export class BoostComponent implements OnInit, OnDestroy {
     this.infoMessage = '';
     this.isOperationSucces = false;
     const account = this.paymentForm.get('account').value;
-    const sendTo = 'broker1';
-    const amount = this.amount + " GBG";
+    const amount = this.amount;
     this.golosService.getAccounts([account]).subscribe(res => {
       if (res.length > 0) {
         this.accountNameInvalid.next(false);
@@ -89,8 +93,8 @@ export class BoostComponent implements OnInit, OnDestroy {
         if (!isWIF) {
           return this.privateKeyInvalid.next(true);
         }
-        if (confirm('Send ' + amount + ' from ' + account + ' to ' + sendTo + '?')) {
-          golos.broadcast.transfer(wif, account, sendTo, amount, this.url, (err, result) => {
+        if (confirm('Send ' + amount + ' from ' + account + ' to ' + this.sendTo + '?')) {
+          golos.broadcast.transfer(wif, account, this.sendTo, amount, this.url, (err, result) => {
             console.log(err, result);
             if (err) {
               return this.infoMessage = 'Error. Details:' + err.message;
@@ -100,6 +104,9 @@ export class BoostComponent implements OnInit, OnDestroy {
               `<a href='https://rentmyvote.org/dashboard/rentmyvote/bids' 
                 target="_blank">https://rentmyvote.org/dashboard/rentmyvote/bids</a>`;
             this.paymentForm.get('password').setValue('');
+            if (this.redirect_uri) {
+              this.redirectBack();
+            }
           });
         } else {
           return false;
@@ -108,6 +115,12 @@ export class BoostComponent implements OnInit, OnDestroy {
         this.accountNameInvalid.next(true);
       }
     });
+  }
+
+  redirectBack() {
+    setTimeout(() => {
+      window.location.replace(this.redirect_uri);
+    },5000)
   }
 
 }
