@@ -19,7 +19,7 @@ export class BoostComponent implements OnInit, OnDestroy {
   url: string;
   redirect_uri: string;
   infoMessage: string;
-  isOperationSucces = false;
+  isOperationSuccess = false;
   paymentForm: FormGroup;
   public accountNameInvalid = new BehaviorSubject<boolean>(false);
   public privateKeyInvalid = new BehaviorSubject<boolean>(false);
@@ -40,7 +40,6 @@ export class BoostComponent implements OnInit, OnDestroy {
           this.sendTo = params['send_to'];
           this.url = params['url'];
           this.redirect_uri = params['redirect_uri'];
-          console.log(this.redirect_uri);
         }
       });
     this.initForm();
@@ -64,7 +63,7 @@ export class BoostComponent implements OnInit, OnDestroy {
 
   sentPayment() {
     this.infoMessage = '';
-    this.isOperationSucces = false;
+    this.isOperationSuccess = false;
     const account = this.paymentForm.get('account').value;
     const amount = this.amount;
     this.golosService.getAccounts([account]).subscribe(res => {
@@ -99,7 +98,7 @@ export class BoostComponent implements OnInit, OnDestroy {
             if (err) {
               return this.infoMessage = 'Error. Details:' + err.message;
             }
-            this.isOperationSucces = true;
+            this.isOperationSuccess = true;
             this.infoMessage = 'Succes! ' + 'Check uplift queue: ' +
               `<a href='https://rentmyvote.org/dashboard/rentmyvote/bids' 
                 target="_blank">https://rentmyvote.org/dashboard/rentmyvote/bids</a>`;

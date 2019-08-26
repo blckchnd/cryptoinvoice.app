@@ -5,7 +5,7 @@
       <img src="{{pathToAssetsFolder + '/images/cryptoinvoice.png'}}" class="image">
     </h2>
     <div class="ui attached message text-left" *ngIf="infoMessage"
-         [ngClass]="{'orange': !isOperationSucces,'olive': isOperationSucces}">
+         [ngClass]="{'orange': !isOperationSuccess,'olive': isOperationSuccess}">
       <div class="header" [innerHTML] = "infoMessage"></div>
     </div>
     <div class="content">
