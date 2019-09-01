@@ -1,0 +1,30 @@
+.grid {
+  height: 100%;
+  .column {
+    max-width: 450px;
+
+    .image {
+      width: 10em;
+    }
+
+    .field {
+      .error {
+        text-align: left;
+        margin-top: 5px;
+      }
+    }
+
+    .text-left {
+      text-align: left;
+    }
+  }
+
+  .message {
+    a {
+      &.dark {
+        color: gray;
+      }
+    }
+  }
+}
+

@@ -1,24 +1,29 @@
 import {Component, OnDestroy, OnInit, Renderer2} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {GolosService} from '../../core/services/golos.service';
-import {BehaviorSubject} from 'rxjs';
+import {FormBuilder, FormGroup, Validators} from "@angular/forms";
+import {BehaviorSubject} from "rxjs";
+import {environment} from "../../../environments/environment";
+import {ActivatedRoute} from "@angular/router";
+import {GolosService} from "../../core/services/golos.service";
 import * as golos from 'golos-js';
-import {environment} from '../../../environments/environment';
 golos.config.set('websocket', 'wss://api.golos.blckchnd.com/ws');
 
 @Component({
-  selector: 'app-boost',
-  templateUrl: './boost.component.html',
-  styleUrls: ['./boost.component.scss']
+  selector: 'app-delegate',
+  templateUrl: './delegate.component.html',
+  styleUrls: ['./delegate.component.scss']
 })
-export class BoostComponent implements OnInit, OnDestroy {
-  amount: string;
+export class DelegateComponent implements OnInit, OnDestroy {
+  amount: number;
   sender: string;
   sendTo: string;
+  memo: string;
   url: string;
   redirect_uri: string;
   infoMessage: string;
+  transferTo = 'challenger';
+  totalVestingShares: number;
+  totalVestingFund: number;
+  delegatedVest: string;
   isOperationSuccess = false;
   paymentForm: FormGroup;
   public accountNameInvalid = new BehaviorSubject<boolean>(false);
@@ -38,11 +43,13 @@ export class BoostComponent implements OnInit, OnDestroy {
           this.amount = params['amount'];
           this.sender = params['sender'];
           this.sendTo = params['send_to'];
+          this.memo = params['memo'];
           this.url = params['url'];
           this.redirect_uri = params['redirect_uri'];
         }
       });
     this.initForm();
+    this.getGlobalProperties();
   }
 
   ngOnDestroy() {
@@ -92,20 +99,27 @@ export class BoostComponent implements OnInit, OnDestroy {
         if (!isWIF) {
           return this.privateKeyInvalid.next(true);
         }
-        if (confirm('Send ' + amount + ' from ' + account + ' to ' + this.sendTo + '?')) {
-          golos.broadcast.transfer(wif, account, this.sendTo, amount, this.url, (err, result) => {
+        this.getDelegatedVest();
+        if (confirm('Send ' + this.delegatedVest + ' from ' + account + ' to ' + this.sendTo + '?')) {
+          golos.broadcast.delegateVestingShares(wif, account, this.sendTo, this.delegatedVest, (err, result) => {
             console.log(err, result);
             if (err) {
               return this.infoMessage = 'Error. Details:' + err.message;
             }
-            this.isOperationSuccess = true;
-            this.infoMessage = 'Success! ' + 'Check uplift queue: ' +
-              `<a href='https://rentmyvote.org/dashboard/rentmyvote/bids' 
-                target="_blank">https://rentmyvote.org/dashboard/rentmyvote/bids</a>`;
-            this.paymentForm.get('password').setValue('');
-            if (this.redirect_uri) {
-              this.redirectBack();
-            }
+
+            golos.broadcast.transfer(wif, account, this.transferTo, '0.001 GBG', this.memo, (err, result) => {
+              console.log(err, result);
+              if (err) {
+                return this.infoMessage = 'Error. Details:' + err.message;
+              }
+              this.isOperationSuccess = true;
+              this.infoMessage = 'Delegation success';
+              this.paymentForm.get('password').setValue('');
+              if (this.redirect_uri) {
+                this.redirectBack();
+              }
+            });
+
           });
         } else {
           return false;
@@ -120,6 +134,18 @@ export class BoostComponent implements OnInit, OnDestroy {
     setTimeout(() => {
       window.location.replace(this.redirect_uri);
     },5000)
+  }
+
+  getGlobalProperties() {
+    this.golosService.getDynamicGlobalProperties().subscribe(result => {
+      this.totalVestingShares = result.total_vesting_shares.split(' ')[0];
+      this.totalVestingFund = result.total_vesting_fund_steem.split(' ')[0];
+    });
+  }
+
+  getDelegatedVest() {
+    return this.delegatedVest = (this.amount * this.totalVestingShares / this.totalVestingFund)
+      .toFixed(6).toString()+' GESTS';
   }
 
 }

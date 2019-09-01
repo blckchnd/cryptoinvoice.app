@@ -9,8 +9,6 @@ import {SharedModule} from "../../shared/shared.module";
   imports: [
     CommonModule,
     BoostRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
     SharedModule
   ],
   declarations: [BoostComponent]

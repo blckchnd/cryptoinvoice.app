@@ -20,4 +20,27 @@ export class GolosService {
       });
     });
   }
+
+  getDynamicGlobalProperties() {
+    return Observable.create((observer) => {
+      golos.api.getDynamicGlobalProperties(function(err, data){
+        if (data) {
+          observer.next(data);
+        }
+      });
+    });
+  }
+
+  multiBroadCast(operations, wif) {
+    return Observable.create((observer) => {
+      golos.broadcast.send( { operations: operations, extensions: [] }, { posting: wif },
+        function(err, data) {
+          if (data) {
+            observer.next(data);
+          } else {
+            observer.next(err);
+          }
+        });
+    });
+  }
 }
