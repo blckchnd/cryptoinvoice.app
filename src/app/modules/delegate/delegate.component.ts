@@ -16,6 +16,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
   amount: number;
   sender: string;
   sendTo: string;
+  challengerAmount: string;
   memo: string;
   url: string;
   redirect_uri: string;
@@ -43,6 +44,7 @@ export class DelegateComponent implements OnInit, OnDestroy {
           this.amount = params['amount'];
           this.sender = params['sender'];
           this.sendTo = params['send_to'];
+          this.challengerAmount = params['challenger_amount'];
           this.memo = params['memo'];
           this.url = params['url'];
           this.redirect_uri = params['redirect_uri'];
@@ -107,7 +109,8 @@ export class DelegateComponent implements OnInit, OnDestroy {
               return this.infoMessage = 'Error. Details:' + err.message;
             }
 
-            golos.broadcast.transfer(wif, account, this.transferTo, '0.001 GBG', this.memo, (err, result) => {
+            golos.broadcast.transfer(wif, account, this.transferTo, this.challengerAmount,
+              this.memo, (err, result) => {
               console.log(err, result);
               if (err) {
                 return this.infoMessage = 'Error. Details:' + err.message;
