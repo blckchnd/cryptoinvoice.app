@@ -5,7 +5,7 @@ import {GolosService} from '../../core/services/golos.service';
 import {BehaviorSubject} from 'rxjs';
 import * as golos from 'golos-js';
 import {environment} from '../../../environments/environment';
-golos.config.set('websocket', 'wss://api.golos.blckchnd.com/ws');
+golos.config.set('websocket', 'wss://api-full.golos.id/ws');
 
 @Component({
   selector: 'app-boost',

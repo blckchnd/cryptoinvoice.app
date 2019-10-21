@@ -5,7 +5,7 @@ import {environment} from "../../../environments/environment";
 import {ActivatedRoute} from "@angular/router";
 import {GolosService} from "../../core/services/golos.service";
 import * as golos from 'golos-js';
-golos.config.set('websocket', 'wss://api.golos.blckchnd.com/ws');
+golos.config.set('websocket', 'wss://api-full.golos.id/ws');
 
 @Component({
   selector: 'app-delegate',

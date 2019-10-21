@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import * as golos from 'golos-js';
+golos.config.set('websocket', 'wss://api-full.golos.id/ws');
 
 @Injectable({
   providedIn: 'root'
